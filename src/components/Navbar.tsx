@@ -49,7 +49,7 @@ const generateMenuItems = (items: { id: string; label: string }[]): MenuProps['i
 
 const Navbar = () => {
     return (
-        <div>
+        <div className='pb-5'>
             <div className="border-b">
                 <div className="max-w-7xl mx-auto flex items-center justify-between px-5 py-5">
                     <Link href="/">
