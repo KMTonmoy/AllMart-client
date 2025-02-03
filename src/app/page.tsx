@@ -8,7 +8,10 @@ const page = () => {
     <div className='flex flex-col gap-10'>
       <Banner />
       <ShoppingByCategories />
-      <Recommended/>
+
+      <div className='max-w-7xl mx-auto'>
+        <Recommended />
+      </div>
     </div>
   );
 };

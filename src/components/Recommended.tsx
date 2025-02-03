@@ -1,32 +1,40 @@
 'use client'
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import ProductCard from './ProductCard';
 
-const Recommended = () => {
+interface Product {
+    name: string;
+    category: string;
+    price: number;
+    tags: string[];
+    description: string;
+    stock: number;
+    colors: string[];
+    images: string[];
+}
+
+const Recommended: React.FC = () => {
+    const [products, setProducts] = useState<Product[]>([]);
+
+    useEffect(() => {
+        fetch('/product.json')
+            .then((response) => response.json())
+            .then((data) => {
+                setProducts(data.slice(-4)); // Get the last 4 products
+            })
+            .catch((error) => console.error('Error fetching products:', error));
+    }, []);
+
     return (
         <div className='px-10'>
-            <div>
+            <div className='mb-5'>
                 <h1 className="font-bold text-2xl text-black">SHOPPING BY CATEGORIES</h1>
             </div>
 
             <div className='flex space-x-4 mt-4'>
-                <div className='w-[300px] hover:cursor-pointer flex flex-col p-2 border-2 relative group'>
-                    <img
-                        src="https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377"
-                        alt="Recommended Product"
-                        className="w-full h-auto object-cover"
-                    />
-
-                    {/* Product Info */}
-                    <div className='mt-5'>
-                        <p>Diamond Halo Stud Eget</p>
-                        <p className='font-bold text-orange-600'>Price: 15</p>
-                    </div>
-
-                    {/* "Add to Cart" Button */}
-                    <button className='absolute inset-0 h-[50px] top-[89%] bg-black text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity'>
-                        Add to Cart
-                    </button>
-                </div>
+                {products.map((product, index) => (
+                   <ProductCard  product={product} key={index}></ProductCard>
+                ))}
             </div>
         </div>
     );
