@@ -1,7 +1,7 @@
 import { LockOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import React from 'react';
 import type { MenuProps } from 'antd';
-import { Button, Dropdown, Space } from 'antd';
+import { Dropdown, Space } from 'antd';
 import Link from 'next/link';
 
 const womenCategories = [

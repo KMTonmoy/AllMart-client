@@ -16,9 +16,9 @@ const Banner = () => {
     useEffect(() => {
         const interval = setTimeout(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
-        }, 4000); // Auto slide every 4 seconds
+        }, 4000);
 
-        return () => clearTimeout(interval); // Clear timeout on re-render
+        return () => clearTimeout(interval);
     }, [currentIndex, banners.length]);
 
     const nextSlide = () => {
@@ -34,10 +34,9 @@ const Banner = () => {
             {banners.length > 0 && (
                 <div className="w-full h-full flex transition-transform duration-500 ease-in-out">
                     {banners.map((banner, index) => (
-                        <img 
-                            key={index} 
-                            src={banner.image} 
-                            alt={`Slide ${index + 1}`} 
+                        <img
+                            key={index}
+                            src={banner.image}
                             className={`absolute w-full h-full object-cover transition-opacity duration-500 ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
                         />
                     ))}
@@ -57,8 +56,8 @@ const Banner = () => {
             {/* Indicators */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                 {banners.map((_, index) => (
-                    <div 
-                        key={index} 
+                    <div
+                        key={index}
                         onClick={() => setCurrentIndex(index)}
                         className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-300 ${index === currentIndex ? 'bg-orange-600' : 'bg-gray-400'}`}
                     />
