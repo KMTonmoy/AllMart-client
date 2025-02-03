@@ -7,12 +7,19 @@ const Banner = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
-        // Fetch banner data from banner.json
         fetch('/banner.json')
             .then(response => response.json())
             .then(data => setBanners(data))
             .catch(error => console.error('Error loading banner data:', error));
     }, []);
+
+    useEffect(() => {
+        const interval = setTimeout(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
+        }, 4000); // Auto slide every 4 seconds
+
+        return () => clearTimeout(interval); // Clear timeout on re-render
+    }, [currentIndex, banners.length]);
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
@@ -36,17 +43,17 @@ const Banner = () => {
                     ))}
                 </div>
             )}
-            
+
             {/* Left Button */}
             <button onClick={prevSlide} className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-600 hover:bg-orange-700 duration-300 bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80">
                 <LeftOutlined />
             </button>
-            
+
             {/* Right Button */}
             <button onClick={nextSlide} className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-600 hover:bg-orange-700 duration-300 bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-80">
                 <RightOutlined />
             </button>
-            
+
             {/* Indicators */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                 {banners.map((_, index) => (
