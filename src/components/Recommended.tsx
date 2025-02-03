@@ -26,14 +26,14 @@ const Recommended: React.FC = () => {
     }, []);
 
     return (
-        <div className='px-10'>
+        <div  >
             <div className='mb-5'>
-                <h1 className="font-bold text-2xl text-black">SHOPPING BY CATEGORIES</h1>
+                <h1 className="font-bold text-2xl md:text-left text-center text-black">SHOPPING BY CATEGORIES</h1>
             </div>
 
-            <div className='flex space-x-4 mt-4'>
+            <div className='flex justify-center flex-wrap gap-4  mt-4'>
                 {products.map((product, index) => (
-                   <ProductCard  product={product} key={index}></ProductCard>
+                    <ProductCard product={product} key={index}></ProductCard>
                 ))}
             </div>
         </div>

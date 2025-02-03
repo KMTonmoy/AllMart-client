@@ -1,5 +1,6 @@
 [
     {
+        "id": 1,
         "name": "Diamond Halo Stud Eget",
         "category": "Jewelry",
         "price": 15,
@@ -18,12 +19,13 @@
         ],
         "images": [
             "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377",
-            "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377",
+            "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/12_260x322.jpg?v=1598339712",
             "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377",
             "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377"
         ]
     },
     {
+        "id": 13,
         "name": "Gold Plated Ring",
         "category": "Jewelry",
         "price": 25,
@@ -48,6 +50,7 @@
         ]
     },
     {
+        "id": 16,
         "name": "Luxury Watch",
         "category": "Accessories",
         "price": 100,
@@ -72,6 +75,7 @@
         ]
     },
     {
+        "id": 19,
         "name": "Leather Wallet",
         "category": "Accessories",
         "price": 30,
@@ -96,6 +100,7 @@
         ]
     },
     {
+        "id": 152,
         "name": "Smartphone Case",
         "category": "Accessories",
         "price": 20,
@@ -120,6 +125,7 @@
         ]
     },
     {
+        "id": 19,
         "name": "Silk Scarf",
         "category": "Accessories",
         "price": 40,
@@ -144,6 +150,7 @@
         ]
     },
     {
+        "id": 196,
         "name": "Sports Shoes",
         "category": "Footwear",
         "price": 50,
@@ -162,7 +169,7 @@
         ],
         "images": [
             "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377",
-            "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377",
+            "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/12_260x322.jpg?v=1598339712",
             "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377",
             "https://mediamart-vinovatheme.myshopify.com/cdn/shop/products/16_7ddf94ee-ae5c-44ed-8d85-3cb692e082bf_260x322.jpg?v=1598340377"
         ]

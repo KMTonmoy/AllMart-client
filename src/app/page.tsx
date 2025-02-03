@@ -5,7 +5,7 @@ import React from 'react';
 
 const page = () => {
   return (
-    <div className='flex flex-col gap-10'>
+    <div className='flex min-h-screen flex-col gap-10'>
       <Banner />
       <ShoppingByCategories />
 
