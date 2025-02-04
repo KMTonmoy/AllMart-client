@@ -1,4 +1,5 @@
 import Banner from '@/components/Banner';
+import HelloSummer from '@/components/HelloSummer';
 import Recommended from '@/components/Recommended';
 import ShoppingByCategories from '@/components/ShoppingByCategories';
 import React from 'react';
@@ -9,8 +10,9 @@ const page = () => {
       <Banner />
       <ShoppingByCategories />
 
-      <div className='max-w-7xl mx-auto'>
+      <div className='max-w-7xl mx-auto flex flex-col gap-10 '>
         <Recommended />
+        <HelloSummer />
       </div>
     </div>
   );
