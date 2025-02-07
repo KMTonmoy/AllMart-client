@@ -28,7 +28,7 @@ const Recommended: React.FC = () => {
     return (
         <div  >
             <div className='mb-5'>
-                <h1 className="font-bold text-2xl md:text-left text-center text-black">SHOPPING BY CATEGORIES</h1>
+                <h1 className="font-bold text-2xl md:text-left text-center text-black">Recommended For You</h1>
             </div>
 
             <div className='flex justify-center flex-wrap gap-4  mt-4'>

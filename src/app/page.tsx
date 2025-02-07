@@ -1,7 +1,11 @@
+import BabySection from '@/components/BabySection';
 import Banner from '@/components/Banner';
 import HelloSummer from '@/components/HelloSummer';
+import MenSection from '@/components/MenSection';
 import Recommended from '@/components/Recommended';
 import ShoppingByCategories from '@/components/ShoppingByCategories';
+import Testimonial from '@/components/Testimonial';
+import WomenSection from '@/components/WomenSection';
 import React from 'react';
 
 const page = () => {
@@ -10,10 +14,15 @@ const page = () => {
       <Banner />
       <ShoppingByCategories />
 
-      <div className='max-w-7xl mx-auto flex flex-col gap-10 '>
+      <div className='max-w-7xl mx-auto flex flex-col gap-10 md:p-0 px-10 '>
         <Recommended />
         <HelloSummer />
+        <WomenSection />
+        <MenSection />
+        <BabySection />
+        <Testimonial />
       </div>
+
     </div>
   );
 };
