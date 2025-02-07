@@ -2,6 +2,7 @@ import BabySection from '@/components/BabySection';
 import Banner from '@/components/Banner';
 import HelloSummer from '@/components/HelloSummer';
 import MenSection from '@/components/MenSection';
+import OurService from '@/components/OurService';
 import Recommended from '@/components/Recommended';
 import ShoppingByCategories from '@/components/ShoppingByCategories';
 import Testimonial from '@/components/Testimonial';
@@ -21,6 +22,7 @@ const page = () => {
         <MenSection />
         <BabySection />
         <Testimonial />
+        <OurService />
       </div>
 
     </div>
