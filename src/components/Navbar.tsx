@@ -1,4 +1,4 @@
-import { LockOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { UserOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import React from 'react';
 import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
@@ -74,12 +74,12 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex gap-3 items-center">
-                        <button>
+                        <Link href={'/login'}>
                             <p className="text-[20px] md:text-[26px]">
-                                <LockOutlined />
+                                <UserOutlined />
                             </p>
                             <p className="text-[7px] md:text-[10px] font-[600] hover:text-orange-600 duration-300">LOG IN</p>
-                        </button>
+                        </Link >
                         <button>
                             <p className="text-[20px] md:text-[26px]">
                                 <ShoppingCartOutlined />
