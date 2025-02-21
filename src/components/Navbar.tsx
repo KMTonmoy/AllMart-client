@@ -1,8 +1,43 @@
+'use client'
 import { UserOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useContext } from 'react';
 import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
 import Link from 'next/link';
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+
+import {
+    Cloud,
+    CreditCard,
+    Github,
+    Keyboard,
+    LifeBuoy,
+    LogOut,
+    Mail,
+    MessageSquare,
+    Plus,
+    PlusCircle,
+    Settings,
+    User,
+    UserPlus,
+    Users,
+} from "lucide-react"
+
 
 const womenCategories = [
     { id: '1', label: 'Dresses' },
@@ -46,7 +81,15 @@ const generateMenuItems = (items: { id: string; label: string }[]): MenuProps['i
         label: <a href={`/shop/${label}`}>{label}</a>,
     }));
 };
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
+import { AuthContext } from '@/Provider/AuthProvider';
 
+const { user } = useContext(AuthContext)
+console.log(user)
 const Navbar = () => {
     return (
         <div className='pb-5'>
@@ -71,21 +114,80 @@ const Navbar = () => {
                         <button className="relative bg-orange-500 rounded-full w-[40px] h-[40px] -left-[50px]">
                             <SearchOutlined />
                         </button>
-                    </div>
 
-                    <div className="flex gap-3 items-center">
-                        <Link href={'/login'}>
-                            <p className="text-[20px] md:text-[26px]">
-                                <UserOutlined />
-                            </p>
-                            <p className="text-[7px] md:text-[10px] font-[600] hover:text-orange-600 duration-300">LOG IN</p>
-                        </Link >
-                        <button>
-                            <p className="text-[20px] md:text-[26px]">
-                                <ShoppingCartOutlined />
-                            </p>
-                            <p className="text-[7px] md:text-[10px] font-[600] hover:text-orange-600 duration-300">MY CART</p>
-                        </button>
+
+
+                    </div>
+                    <div>
+                        {user ? (
+                            <>
+                                <div>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+
+
+                                            <Avatar>
+                                                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                                                <AvatarFallback>CN</AvatarFallback>
+                                            </Avatar>
+
+
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="w-56">
+                                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuGroup>
+                                                <DropdownMenuItem>
+                                                    <User />
+                                                    <span>Profile</span>
+                                                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem>
+                                                    <CreditCard />
+                                                    <span>Dashboard</span>
+                                                    <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem>
+                                                    <Settings />
+                                                    <span>Settings</span>
+                                                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+
+                                            </DropdownMenuGroup>
+
+
+                                            <DropdownMenuItem>
+                                                <LifeBuoy />
+                                                <span>Support</span>
+                                            </DropdownMenuItem>
+
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem>
+                                                <LogOut />
+                                                <span>Log out</span>
+                                                <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </>
+                        ) : (
+
+                            <div className="flex gap-3 items-center">
+                                <Link href={'/login'}>
+                                    <p className="text-[20px] md:text-[26px]">
+                                        <UserOutlined />
+                                    </p>
+                                    <p className="text-[7px] md:text-[10px] font-[600] hover:text-orange-600 duration-300">LOG IN</p>
+                                </Link >
+                                <button>
+                                    <p className="text-[20px] md:text-[26px]">
+                                        <ShoppingCartOutlined />
+                                    </p>
+                                    <p className="text-[7px] md:text-[10px] font-[600] hover:text-orange-600 duration-300">MY CART</p>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -120,6 +222,11 @@ const Navbar = () => {
                         <a href="shop/baby">
                             <p className="cursor-pointer font-[600] hover:text-orange-600 duration-300 text-[13px]">Contact Us</p>
                         </a>
+
+
+
+
+
                     </Space>
                 </Space>
             </div>
