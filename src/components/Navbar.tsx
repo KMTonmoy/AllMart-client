@@ -88,9 +88,9 @@ import {
 } from "@/components/ui/avatar"
 import { AuthContext } from '@/Provider/AuthProvider';
 
-const { user } = useContext(AuthContext)
-console.log(user)
 const Navbar = () => {
+    const { user, logOut } = useContext(AuthContext)
+    console.log(user)
     return (
         <div className='pb-5'>
             <div className="border-b">
@@ -127,7 +127,7 @@ const Navbar = () => {
 
 
                                             <Avatar>
-                                                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                                                <AvatarImage src={user?.photoURL} alt="@shadcn" />
                                                 <AvatarFallback>CN</AvatarFallback>
                                             </Avatar>
 
@@ -163,8 +163,10 @@ const Navbar = () => {
 
                                             <DropdownMenuSeparator />
                                             <DropdownMenuItem>
-                                                <LogOut />
-                                                <span>Log out</span>
+                                                <button className='flex items-center gap-2 hover:cursor-pointer' onClick={() => logOut()}>
+                                                    <LogOut />
+                                                    <span>Log out</span>
+                                                </button>
                                                 <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
