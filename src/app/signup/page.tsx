@@ -1,7 +1,7 @@
 'use client';
 import Lottie from 'lottie-react';
 import regAnimation from '../../../public/reg.json';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../Provider/AuthProvider';
 import { imageUpload } from '../../api/utils/index';
@@ -16,6 +16,29 @@ const Page = () => {
     // const [phone, setPhone] = useState('');
     const [image, setImage] = useState(null);
     const axiosPublic = useAxiosPublic();
+
+    const [deviceType, setDeviceType] = useState("");
+
+    useEffect(() => {
+        const userAgent = window.navigator.userAgent;
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
+        const isTablet = /iPad|Android/i.test(userAgent) && !/Mobile/i.test(userAgent);
+        const isDesktop = !isMobile && !isTablet;
+
+        let detectedDevice = "Desktop";
+        if (isMobile) {
+            detectedDevice = "Mobile";
+        } else if (isTablet) {
+            detectedDevice = "Tablet";
+        }
+
+        setDeviceType(detectedDevice);
+        console.log("User Agent:", userAgent);
+        console.log("Device Type:", detectedDevice);
+    }, []);
+
+
+
 
 
     const { createUser, updateUserProfile, signInWithGoogle } = useContext(AuthContext);
