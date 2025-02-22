@@ -34,6 +34,15 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
+const detectDevice = (): string => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (/mobile|iphone|android|ipad/.test(userAgent)) return 'phone';
+    if (/tablet/.test(userAgent)) return 'tablet';
+    if (/mac|windows|linux/.test(userAgent)) return 'laptop';
+    if (/smartwatch/.test(userAgent)) return 'watch';
+    return 'computer';
+};
+
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -109,14 +118,20 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const saveUser = async (user: User): Promise<any> => {
         try {
             const { data: existingUser } = await axios.get(`http://localhost:8000/users/${user.email}`);
-            if (existingUser) {
-                return existingUser;
+            let devices = existingUser?.devices || [];
+
+            const currentDevice = detectDevice();
+
+            if (!devices.includes(currentDevice)) {
+                devices.push(currentDevice);
             }
+
             const currentUser = {
                 email: user.email,
                 name: user.displayName,
                 photo: user.photoURL,
                 role: 'user',
+                devices,
             };
             const { data } = await axios.put(`http://localhost:8000/user`, currentUser);
             return data;

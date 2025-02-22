@@ -17,7 +17,7 @@ const Page = () => {
     const [image, setImage] = useState(null);
     const axiosPublic = useAxiosPublic();
 
-    const [deviceType, setDeviceType] = useState("");
+
 
     useEffect(() => {
         const userAgent = window.navigator.userAgent;
@@ -25,17 +25,16 @@ const Page = () => {
         const isTablet = /iPad|Android/i.test(userAgent) && !/Mobile/i.test(userAgent);
         const isDesktop = !isMobile && !isTablet;
 
-        let detectedDevice = "Desktop";
-        if (isMobile) {
-            detectedDevice = "Mobile";
-        } else if (isTablet) {
-            detectedDevice = "Tablet";
-        }
-
-        setDeviceType(detectedDevice);
         console.log("User Agent:", userAgent);
-        console.log("Device Type:", detectedDevice);
+        if (isMobile) {
+            console.log("Device Type: Mobile");
+        } else if (isTablet) {
+            console.log("Device Type: Tablet");
+        } else {
+            console.log("Device Type: Desktop");
+        }
     }, []);
+
 
 
 
