@@ -21,8 +21,10 @@ const page = () => {
         <WomenSection />
         <MenSection />
         <BabySection />
-        <Testimonial />
+        {/* <Testimonial /> */}
+ 
         <OurService />
+
       </div>
 
     </div>

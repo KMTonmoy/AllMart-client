@@ -1,174 +1,160 @@
-'use client';
-import { createContext, useEffect, useState, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+'use client'
+import { UserOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import React, { useContext } from 'react';
+import type { MenuProps } from 'antd';
+import { Dropdown, Space } from 'antd';
+import Link from 'next/link';
 import {
-    GoogleAuthProvider,
-    User,
-    createUserWithEmailAndPassword,
-    getAuth,
-    onAuthStateChanged,
-    signInWithEmailAndPassword,
-    signInWithPopup,
-    signOut,
-    updateProfile,
-} from 'firebase/auth';
-import { app } from '../firebase/firebase.config';
-import axios from 'axios';
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    CreditCard,
+    LifeBuoy,
+    LogOut,
+    Settings,
+    User
+} from "lucide-react";
+import { AuthContext } from '@/Provider/AuthProvider';
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar";
+import { usePathname } from 'next/navigation';
 
-interface AuthContextProps {
-    user: User | null;
-    loading: boolean;
-    createUser: (email: string, password: string) => Promise<void>;
-    signIn: (email: string, password: string) => Promise<void>;
-    signInWithGoogle: () => Promise<void>;
-    logOut: () => Promise<void>;
-    updateUserProfile: (name: string, photo: string) => Promise<void>;
-}
+const womenCategories = [
+    { id: '1', label: 'Dresses' },
+    { id: '2', label: 'Tops & Tees' },
+    { id: '3', label: 'Skirts' },
+    { id: '4', label: 'Jackets & Coats' },
+    { id: '5', label: 'Sweaters' },
+    { id: '6', label: 'Swimwear' },
+    { id: '7', label: 'Boots' },
+    { id: '8', label: 'T-shirt' },
+    { id: '9', label: 'Shoes' },
+];
 
-export const AuthContext = createContext<AuthContextProps | null>(null);
+const menCategories = [
+    { id: '15', label: 'T-Shirts' },
+    { id: '25', label: 'Tanks' },
+    { id: '35', label: 'Polos' },
+    { id: '45', label: 'Leather' },
+    { id: '55', label: 'Janeiro Stores' },
+    { id: '65', label: 'Necessary Clothing' },
+    { id: '75', label: 'Express Clothes' },
+    { id: '85', label: 'Spark Pretty' },
+    { id: '95', label: 'Warm' },
+];
 
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-
-interface AuthProviderProps {
-    children: ReactNode;
-}
-
-const detectDevice = (): string => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (/mobile|iphone|android|ipad/.test(userAgent)) return 'phone';
-    if (/tablet/.test(userAgent)) return 'tablet';
-    if (/mac|windows|linux/.test(userAgent)) return 'laptop';
-    if (/smartwatch/.test(userAgent)) return 'watch';
-    return 'computer';
+const generateMenuItems = (items: { id: string; label: string }[]): MenuProps['items'] => {
+    return items.map(({ id, label }) => ({
+        key: id,
+        label: <a href={`/shop/${label}`}>{label}</a>,
+    }));
 };
 
-const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const router = useRouter();
+const Navbar = () => {
+    const pathname = usePathname();
+    const isDashboardPage = pathname?.startsWith('/dashboard');
+    const { user, logOut } = useContext(AuthContext);
 
-    const createUser = async (email: string, password: string): Promise<void> => {
-        setLoading(true);
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            router.push('/');
-        } catch (error) {
-            console.error('Error creating user:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (isDashboardPage) {
+        return null;
+    }
 
-    const signIn = async (email: string, password: string): Promise<void> => {
-        setLoading(true);
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            router.push('/');
-        } catch (error) {
-            console.error('Error signing in:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const signInWithGoogle = async (): Promise<void> => {
-        setLoading(true);
-        try {
-            await signInWithPopup(auth, googleProvider);
-            router.push('/');
-        } catch (error) {
-            console.error('Error signing in with Google:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const logOut = async (): Promise<void> => {
-        setLoading(true);
-        try {
-            await axios.get(`http://localhost:8000/logout`, { withCredentials: true });
-            await signOut(auth);
-            router.push('/login');
-        } catch (error) {
-            console.error('Error logging out:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const updateUserProfile = async (name: string, photo: string): Promise<void> => {
-        try {
-            if (auth.currentUser) {
-                await updateProfile(auth.currentUser, {
-                    displayName: name,
-                    photoURL: photo,
-                });
-            }
-        } catch (error) {
-            console.error('Error updating user profile:', error);
-            throw error;
-        }
-    };
-
-    const saveUser = async (user: User): Promise<any> => {
-        try {
-            const { data: existingUser } = await axios.get(`http://localhost:8000/users/${user.email}`);
-            let devices = existingUser?.devices || [];
-
-            const currentDevice = detectDevice();
-
-            if (!devices.includes(currentDevice)) {
-                devices.push(currentDevice);
-            }
-
-            const currentUser = {
-                email: user.email,
-                name: user.displayName,
-                photo: user.photoURL,
-                role: 'user',
-                devices,
-            };
-            const { data } = await axios.put(`http://localhost:8000/user`, currentUser);
-            return data;
-        } catch (error) {
-            console.error('Error saving user:', error);
-            throw error;
-        }
-    };
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            setUser(currentUser);
-            if (currentUser) {
-                setTimeout(async () => {
-                    try {
-                        await saveUser(currentUser);
-                    } catch (error) {
-                        console.error('Error handling auth state change:', error);
-                    }
-                }, 5000);
-            }
-            setLoading(false);
-        });
-        return () => unsubscribe();
-    }, []);
-
-    const authInfo: AuthContextProps = {
-        user,
-        loading,
-        createUser,
-        signIn,
-        signInWithGoogle,
-        logOut,
-        updateUserProfile,
-    };
-
-    return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
+    return (
+        <div>
+            <div className='pb-5'>
+                <div className="border-b">
+                    <div className="max-w-7xl mx-auto flex items-center justify-between px-5 py-5">
+                        <Link href="/">
+                            <div className="flex items-center gap-2">
+                                <img src="https://cdn-icons-png.flaticon.com/512/3225/3225209.png" className="w-[50px] h-[50px]" />
+                                <h1 className="md:block hidden">All Mart</h1>
+                            </div>
+                        </Link>
+                        <div className="flex items-center space-x-3">
+                            <input type="text" className="md:w-[700px] w-[250px] outline-none border p-[15px] rounded-full" placeholder="WHAT ARE YOU LOOKING FOR ?" />
+                            <button className="relative bg-orange-500 rounded-full w-[40px] h-[40px] -left-[50px]">
+                                <SearchOutlined />
+                            </button>
+                        </div>
+                        <div>
+                            {user ? (
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Avatar>
+                                            <AvatarImage src={user?.photoURL} alt="User" />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </Avatar>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56">
+                                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuGroup>
+                                            <Link href={`/profile/${user?.uid}`}>
+                                                <DropdownMenuItem><User /><span>Profile</span></DropdownMenuItem>
+                                            </Link>
+                                            <Link href={'/dashboard'}>
+                                                <DropdownMenuItem><CreditCard /><span>Dashboard</span></DropdownMenuItem>
+                                            </Link>
+                                            <Link href={'/settings'}>
+                                                <DropdownMenuItem><Settings /><span>Settings</span></DropdownMenuItem>
+                                            </Link>
+                                        </DropdownMenuGroup>
+                                        <Link href={'/support'}>
+                                            <DropdownMenuItem><LifeBuoy /><span>Support</span></DropdownMenuItem>
+                                        </Link>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem>
+                                            <button className='flex items-center gap-2' onClick={logOut}>
+                                                <LogOut /><span>Log out</span>
+                                            </button>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            ) : (
+                                <div className="flex gap-3 items-center">
+                                    <Link href={'/login'}>
+                                        <p className="text-[20px] md:text-[26px]"> <UserOutlined /> </p>
+                                        <p className="text-[7px] md:text-[10px] font-[600]">LOG IN</p>
+                                    </Link>
+                                    <button>
+                                        <p className="text-[20px] md:text-[26px]"> <ShoppingCartOutlined /> </p>
+                                        <p className="text-[7px] md:text-[10px] font-[600]">MY CART</p>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+                <div className="max-w-7xl px-5 mt-2 mx-auto">
+                    <Space direction="vertical">
+                        <Space wrap className="flex gap-4">
+                            <Dropdown menu={{ items: generateMenuItems(womenCategories) }} placement="bottomLeft">
+                                <p className="cursor-pointer font-[600]">Women</p>
+                            </Dropdown>
+                            <Dropdown menu={{ items: generateMenuItems(menCategories) }} placement="bottomLeft">
+                                <p className="cursor-pointer font-[600]">Men</p>
+                            </Dropdown>
+                            <Link href="shop/baby"><p className="cursor-pointer font-[600]">Youth & Baby</p></Link>
+                            <Link href="shop/home"><p className="cursor-pointer font-[600]">Home & Living</p></Link>
+                            <Link href="shop/accessories"><p className="cursor-pointer font-[600]">Accessories</p></Link>
+                            <Link href="shop/mugs"><p className="cursor-pointer font-[600]">Mugs</p></Link>
+                            <Link href="shop/jewelry"><p className="cursor-pointer font-[600]">Jewelry</p></Link>
+                            <Link href="contact"><p className="cursor-pointer font-[600]">Contact Us</p></Link>
+                        </Space>
+                    </Space>
+                </div>
+            </div>
+        </div>
+    );
 };
 
-export default AuthProvider;
+export default Navbar;

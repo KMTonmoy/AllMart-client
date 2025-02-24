@@ -2,13 +2,13 @@ import React from 'react';
 
 const HelloSummer = () => {
     return (
-        <div className="flex flex-col items-center gap-5">
+        <div className="flex flex-col  items-center gap-5">
             <img
                 className="w-full"
                 src="https://mediamart-vinovatheme.myshopify.com/cdn/shop/files/bn-1-7_1920x1920.jpg?v=1614331007"
                 alt=""
             />
-            <div className="flex gap-5 justify-center items-center">
+            <div className="md:flex gap-5 flex-wrap  justify-center items-center">
                 <div className="relative group">
                     <img
                         className="w-full rounded-lg shadow-lg transform transition duration-300 ease-in-out group-hover:rotate-3"

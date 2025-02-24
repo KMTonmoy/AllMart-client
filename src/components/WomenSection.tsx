@@ -1,8 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Tabs, Skeleton } from 'antd';
-import type { TabsProps } from 'antd';
+import { Skeleton, Button } from 'antd';
 import ProductCard from './ProductCard';
+import { useRouter } from 'next/navigation';
+import { buttonVariants } from "@/components/ui/button"
 
 interface Product {
     _id: string;
@@ -18,14 +19,15 @@ interface Product {
 }
 
 const WomenSection = () => {
-    const [products, setProducts] = useState<Product[]>([]); // ✅ Explicitly set type for useState
+    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const response = await fetch('http://localhost:8000/products');
-                const data: Product[] = await response.json(); // ✅ Define data type explicitly
+                const data: Product[] = await response.json();
                 const womenProducts = data.filter(product => product.gender === 'woman');
                 setProducts(womenProducts);
             } catch (error) {
@@ -38,28 +40,9 @@ const WomenSection = () => {
         fetchProducts();
     }, []);
 
-    const categories = [...new Set(products.map(product => product.category))];
-
-    const items: TabsProps['items'] = categories.map((category, index) => ({
-        key: String(index + 1),
-        label: category,
-        children: loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="border rounded-lg p-4 shadow-md w-full">
-                        <Skeleton.Image active style={{ width: '100%', height: 150 }} />
-                        <Skeleton active paragraph={{ rows: 2 }} />
-                    </div>
-                ))}
-            </div>
-        ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                {products.filter(product => product.category === category).map(product => (
-                    <ProductCard key={product._id} product={product} />
-                ))}
-            </div>
-        ),
-    }));
+    const handleSeeMore = () => {
+        router.push('/shop/Dresses');
+    };
 
     return (
         <div>
@@ -69,9 +52,10 @@ const WomenSection = () => {
                     Teemax store, all the t-shirts, sweatshirts, hoodies, tank tops, mugs that you could be looking for
                 </p>
             </div>
+
             {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                    {Array.from({ length: 9 }).map((_, i) => (
                         <div key={i} className="border rounded-lg p-4 shadow-md w-full">
                             <Skeleton.Image active style={{ width: '100%', height: 150 }} />
                             <Skeleton active paragraph={{ rows: 2 }} />
@@ -79,7 +63,24 @@ const WomenSection = () => {
                     ))}
                 </div>
             ) : (
-                <Tabs defaultActiveKey="1" items={items} />
+                <div>
+                    <div className='flex justify-center'>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                            {products.slice(0, 9).map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Show "See More" button only if there are more than 9 products */}
+                    {products.length > 9 && (
+                        <div className="text-center mt-6">
+                            <Button className={buttonVariants({ variant: "outline" })} onClick={handleSeeMore}>
+                                See More
+                            </Button>
+                        </div>
+                    )}
+                </div>
             )}
         </div>
     );

@@ -78,7 +78,7 @@ const Testimonial = () => {
       </div>
 
       <motion.div
-        className="mt-8 flex w-full gap-6"
+        className="mt-8 flex w-full gap-6 overflow-x-scroll md:overflow-hidden"
         initial={{ x: "100%" }}
         animate={{ x: "-100%" }}
         transition={{ ease: "linear", duration: 20, repeat: Infinity }}
