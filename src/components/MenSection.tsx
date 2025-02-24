@@ -1,16 +1,20 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Skeleton } from 'antd';
 import type { TabsProps } from 'antd';
 import ProductCard from './ProductCard';
 
 interface Product {
-  id: string;
+  _id: string;
   name: string;
   gender: string;
   category: string;
-  price?: number;
-  description?: string;
+  price: number;
+  description: string;
+  tags: string[];
+  stock: number;
+  colors: string[];
+  images: string[];
 }
 
 const MenSection = () => {
@@ -21,13 +25,13 @@ const MenSection = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch('http://localhost:8000/products');
-        const data = await response.json();
+        const data: Product[] = await response.json();
         const menProducts = data.filter(product => product.gender === 'man');
         setProducts(menProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
-        setLoading(false);  
+        setLoading(false);
       }
     };
 
@@ -40,11 +44,18 @@ const MenSection = () => {
     key: String(index + 1),
     label: category,
     children: loading ? (
-      <p>Loading...</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="border rounded-lg p-4 shadow-md w-full">
+            <Skeleton.Image active style={{ width: '100%', height: 150 }} />
+            <Skeleton active paragraph={{ rows: 2 }} />
+          </div>
+        ))}
+      </div>
     ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {products.filter(product => product.category === category).map(product => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product._id} product={product} />
         ))}
       </div>
     ),
@@ -58,7 +69,18 @@ const MenSection = () => {
           Teemax store, all the t-shirts, sweatshirts, hoodies, tank tops, mugs that you could be looking for
         </p>
       </div>
-      <Tabs defaultActiveKey="1" items={items} />
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="border rounded-lg p-4 shadow-md w-full">
+              <Skeleton.Image active style={{ width: '100%', height: 150 }} />
+              <Skeleton active paragraph={{ rows: 2 }} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <Tabs defaultActiveKey="1" items={items} />
+      )}
     </div>
   );
 };
