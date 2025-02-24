@@ -11,7 +11,7 @@ const WomenSection = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('/product.json');
+                const response = await fetch('http://localhost:8000/products');
                 const data = await response.json();
                 const womenProducts = data.filter(product => product.gender === 'woman');
                 setProducts(womenProducts);

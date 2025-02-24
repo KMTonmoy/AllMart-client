@@ -1,68 +1,99 @@
-'use client'
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+"use client";
+
+import * as React from "react";
+import {
+    Bot,
+    Folder,
+    LifeBuoy,
+    Map,
+    PieChart,
+    Send,
+    Settings,
+    SquareTerminal,
+} from "lucide-react";
 
 import {
     Sidebar,
     SidebarContent,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
+    SidebarFooter,
+    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { NavMain } from "./nav-main";
 
-// Menu items.
-const items = [
-    {
-        title: "Home",
-        url: "#",
-        icon: Home,
-    },
-    {
-        title: "Inbox",
-        url: "#",
-        icon: Inbox,
-    },
-    {
-        title: "Calendar",
-        url: "#",
-        icon: Calendar,
-    },
-    {
-        title: "Search",
-        url: "#",
-        icon: Search,
-    },
-    {
-        title: "Settings",
-        url: "#",
-        icon: Settings,
-    },
-]
+import Link from "next/link";
+import { AuthContext } from "@/Provider/AuthProvider";
+const data = {
+    navMain: [
+        {
+            title: "/Dashboard",
+            url: "/dashboard",
+            icon: SquareTerminal,
+            isActive: true,
+        },
+        {
+            title: "Shop",
+            url: "/dashboard/adm/MGcategory",
+            icon: Folder,
+            items: [
+                {
+                    title: "Manage Products",
+                    url: "/dashboard/adm/MGProducts",
+                },
+                {
+                    title: "Manage Categories",
+                    url: "/dashboard/adm/MGcategory",
+                },
+                {
+                    title: "Manage Brands",
+                    url: "/dashboard/adm/MGbrand",
+                },
+            ],
+        },
 
-export function AppSidebar() {
+        {
+            title: "Settings",
+            url: "#",
+            icon: Settings,
+            items: [
+                {
+                    title: "Profile",
+                    url: "/profile",
+                },
+            ],
+        },
+    ]
+};
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const { user } = React.useContext(AuthContext)
+
     return (
-        <Sidebar>
+        <Sidebar collapsible="icon" {...props}>
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton size="lg" asChild>
+                            <Link href="/">
+                                <div className="flex items-center justify-center">
+                                    <img className="w-[50px]" src="https://cdn-icons-png.flaticon.com/512/3225/3225209.png" alt="" />
+                                </div>
+                                <div className="grid flex-1 text-left text-sm leading-tight">
+                                    <h2 className="font-bold text-xl">AllMart</h2>
+                                </div>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Application</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <a href={item.url}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
-                                        </a>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                <NavMain items={data.navMain} />
             </SidebarContent>
+            <SidebarFooter>
+                {user?.name}
+            </SidebarFooter>
         </Sidebar>
-    )
+    );
 }

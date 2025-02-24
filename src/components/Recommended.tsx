@@ -17,7 +17,7 @@ const Recommended: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        fetch('/product.json')
+        fetch('http://localhost:8000/products')
             .then((response) => response.json())
             .then((data) => {
                 setProducts(data.slice(-4)); // Get the last 4 products
