@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,35 +14,59 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
+import { Select, SelectItem } from "@/components/ui/select";
 
 export function ProductFormDialog() {
+    const [categories, setCategories] = useState<string[]>([]);
     const [product, setProduct] = useState({
         name: "",
         category: "",
         price: "",
-        description: "",
         stock: "",
-        colors: [],
-        images: ["", "", "", ""],
+        description: "",
+        tags: [] as string[],
+        colors: [] as string[],
+        images: [],
         gender: "",
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, index?: number) => {
-        if (index !== undefined) {
-            // Handle array fields (images)
-            setProduct((prev) => {
-                const newArray = [...prev[field as keyof typeof product]];
-                newArray[index] = e.target.value;
-                return { ...prev, [field]: newArray };
-            });
-        } else {
-            setProduct({ ...product, [field]: e.target.value });
+    useEffect(() => {
+        fetch("http://localhost:8000/catagorys")
+            .then((res) => res.json())
+            .then((data) => setCategories(data));
+    }, []);
+
+    const handleInputChange = (e, field) => {
+        setProduct({ ...product, [field]: e.target.value });
+    };
+
+    const handleTagInput = (e, field) => {
+        if (e.key === " " && e.target.value.trim()) {
+            const value = e.target.value.trim();
+            if (!product[field].includes(value)) {
+                setProduct(prev => ({ ...prev, [field]: [...prev[field], value] }));
+            }
+            e.target.value = "";
         }
     };
 
-    const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedColors = Array.from(e.target.selectedOptions, option => option.value);
-        setProduct(prev => ({ ...prev, colors: selectedColors }));
+    const removeItem = (field, itemToRemove) => {
+        setProduct(prev => ({ ...prev, [field]: prev[field].filter(item => item !== itemToRemove) }));
+    };
+
+    const handleImageUpload = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length + product.images.length > 4) return;
+        const imageUrls = files.map(file => URL.createObjectURL(file));
+        setProduct(prev => ({ ...prev, images: [...prev.images, ...imageUrls] }));
+    };
+
+    const removeImage = (index) => {
+        setProduct(prev => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+        }));
     };
 
     const handleSubmit = () => {
@@ -57,106 +82,78 @@ export function ProductFormDialog() {
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Add New Product</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Fill in the details below to add a new product to the catalog.
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Fill in the details below to add a new product to the catalog.</AlertDialogDescription>
                 </AlertDialogHeader>
 
                 <div className="grid gap-4">
-                    {/* Name */}
-                    <div>
-                        <Label htmlFor="name">Product Name</Label>
-                        <Input id="name" type="text" placeholder="Enter product name" value={product.name}
-                            onChange={(e) => handleInputChange(e, "name")} />
-                    </div>
+                    <Label>Product Name</Label>
+                    <Input value={product.name} onChange={(e) => handleInputChange(e, "name")} />
 
-                    {/* Category */}
-                    <div>
-                        <Label htmlFor="category">Category</Label>
-                        <Input id="category" type="text" placeholder="Enter category" value={product.category}
-                            onChange={(e) => handleInputChange(e, "category")} />
-                    </div>
+                    <Label>Category</Label>
+                    <Select onValueChange={(value) => setProduct({ ...product, category: value })}>
+                        {categories.map((category, index) => (
+                            <SelectItem key={index} value={category}>{category}</SelectItem>
+                        ))}
+                    </Select>
 
-                    {/* Price */}
-                    <div>
-                        <Label htmlFor="price">Price ($)</Label>
-                        <Input id="price" type="number" placeholder="Enter price" value={product.price}
-                            onChange={(e) => handleInputChange(e, "price")} />
-                    </div>
+                    <Label>Price ($)</Label>
+                    <Input type="number" value={product.price} onChange={(e) => handleInputChange(e, "price")} />
 
-                    {/* Description */}
-                    <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Input id="description" type="text" placeholder="Enter description" value={product.description}
-                            onChange={(e) => handleInputChange(e, "description")} />
-                    </div>
+                    <Label>Stock</Label>
+                    <Input type="number" value={product.stock} onChange={(e) => handleInputChange(e, "stock")} />
 
-                    {/* Stock */}
-                    <div>
-                        <Label htmlFor="stock">Stock</Label>
-                        <Input id="stock" type="number" placeholder="Enter stock quantity" value={product.stock}
-                            onChange={(e) => handleInputChange(e, "stock")} />
-                    </div>
-
-                    {/* Gender Selection */}
-                    <div>
-                        <Label>Gender</Label>
-                        <div>
-                            <label>
-                                <input type="radio" name="gender" value="Men" checked={product.gender === "Men"}
+                    <Label>Gender</Label>
+                    <div className="flex gap-4">
+                        {["Men", "Women", "Baby", "Anyone"].map((gender) => (
+                            <label key={gender} className="flex items-center gap-2">
+                                <input type="radio" name="gender" value={gender} checked={product.gender === gender}
                                     onChange={(e) => handleInputChange(e, "gender")} />
-                                Men
+                                {gender}
                             </label>
-                            <label>
-                                <input type="radio" name="gender" value="Women" checked={product.gender === "Women"}
-                                    onChange={(e) => handleInputChange(e, "gender")} />
-                                Women
-                            </label>
-                            <label>
-                                <input type="radio" name="gender" value="Baby" checked={product.gender === "Baby"}
-                                    onChange={(e) => handleInputChange(e, "gender")} />
-                                Baby
-                            </label>
-                            <label>
-                                <input type="radio" name="gender" value="Anyone" checked={product.gender === "Anyone"}
-                                    onChange={(e) => handleInputChange(e, "gender")} />
-                                Anyone
-                            </label>
-                        </div>
+                        ))}
                     </div>
 
-                    {/* Colors (Dropdown, multi-select) */}
-                    <div>
-                        <Label htmlFor="colors">Colors</Label>
-                        <select id="colors" multiple value={product.colors} onChange={handleColorChange} className="w-full">
-                            <option value="#FF0000">Red</option>
-                            <option value="#00FF00">Green</option>
-                            <option value="#0000FF">Blue</option>
-                            <option value="#FFFF00">Yellow</option>
-                            <option value="#000000">Black</option>
-                            <option value="#FFFFFF">White</option>
-                        </select>
-                    </div>
-
-                    {/* Images */}
-                    <div className="grid grid-cols-2 gap-2">
-                        {product.images.map((image, index) => (
-                            <div key={index}>
-                                <Label htmlFor={`image-${index}`}>Image {index + 1}</Label>
-                                <Input id={`image-${index}`} type="file" accept="image/*" onChange={(e) => {
-                                    const file = e.target.files ? e.target.files[0] : null;
-                                    if (file) {
-                                        const reader = new FileReader();
-                                        reader.onloadend = () => {
-                                            handleInputChange({ target: { value: reader.result as string } } as any, "images", index);
-                                        };
-                                        reader.readAsDataURL(file);
-                                    }
-                                }} />
-                                {image && <img src={image} alt={`Preview ${index + 1}`} className="w-16 h-16 rounded mt-2" />}
+                    <Label>Tags</Label>
+                    <Input placeholder="Type a tag and press space" onKeyDown={(e) => handleTagInput(e, "tags")} />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {product.tags.map((tag, index) => (
+                            <div key={index} className="flex items-center bg-blue-500 text-white px-3 py-1 rounded-full">
+                                <span>{tag}</span>
+                                <button onClick={() => removeItem("tags", tag)} className="ml-2 text-sm hover:text-red-500">
+                                    <X size={14} />
+                                </button>
                             </div>
                         ))}
                     </div>
+
+                    <Label>Colors</Label>
+                    <Input placeholder="Type a color and press space" onKeyDown={(e) => handleTagInput(e, "colors")} />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {product.colors.map((color, index) => (
+                            <div key={index} className="flex items-center bg-gray-300 px-3 py-1 rounded-full">
+                                <span>{color}</span>
+                                <button onClick={() => removeItem("colors", color)} className="ml-2 text-sm hover:text-red-500">
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <Label>Images</Label>
+                    <Input type="file" accept="image/*" multiple onChange={handleImageUpload} />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {product.images.map((image, index) => (
+                            <div key={index} className="relative w-20 h-20">
+                                <img src={image} alt={`Preview ${index + 1}`} className="w-full h-full rounded" />
+                                <button onClick={() => removeImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <Label>Description</Label>
+                    <textarea className="border-2 min-h-[100px]" value={product.description} onChange={(e) => handleInputChange(e, "description")} />
                 </div>
 
                 <AlertDialogFooter>
